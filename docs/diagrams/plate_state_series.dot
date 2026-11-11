@@ -1,0 +1,32 @@
+digraph "State series" {
+  rankdir=LR;
+  node [shape=circle fontname="DejaVu Sans" fontsize=11 width=0.45 fixedsize=false];
+  edge [fontname="DejaVu Sans" fontsize=9 arrowsize=0.7];
+  __start [shape=point width=0.07];
+  "p0" [id="p0" shape=circle label="p0"];
+  "p1" [id="p1" shape=circle label="p1"];
+  "p2" [id="p2" shape=circle label="p2"];
+  "p3" [id="p3" shape=circle label="p3"];
+  "p4" [id="p4" shape=circle label="p4"];
+  "p5" [id="p5" shape=circle label="p5"];
+  "p6" [id="p6" shape=circle label="p6"];
+  "p7" [id="p7" shape=circle label="p7"];
+  "p8" [id="p8" shape=circle label="p8"];
+  "p9" [id="p9" shape=circle label="p9"];
+  "p10" [id="p10" shape=circle label="p10"];
+  "p11" [id="p11" shape=doublecircle label="p11"];
+  __start -> "p0";
+  "p0" -> "p1" [label="L"];
+  "p1" -> "p2" [label="L"];
+  "p2" -> "p3" [label="D"];
+  "p3" -> "p4" [label="D"];
+  "p4" -> "p5" [label="L"];
+  "p5" -> "p6" [label="L"];
+  "p5" -> "p8" [label="D"];
+  "p6" -> "p7" [label="L"];
+  "p6" -> "p8" [label="D"];
+  "p7" -> "p8" [label="D"];
+  "p8" -> "p9" [label="D"];
+  "p9" -> "p10" [label="D"];
+  "p10" -> "p11" [label="D"];
+}

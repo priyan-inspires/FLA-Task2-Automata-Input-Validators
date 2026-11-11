@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Automata Validators Demo</title>
+<style>
+  :root { --ink:#1b2430; --muted:#5d6b7a; --line:#d8dee6; --bg:#f4f6f8; --card:#fff;
+          --accent:#0f5c63; --ok:#1d7a45; --okbg:#e5f4ea; --bad:#b3261e; --badbg:#fbe9e7; --hl:#f5b301; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:"Segoe UI", Inter, system-ui, sans-serif; background:var(--bg); color:var(--ink); }
+  header { background:var(--accent); color:#fff; padding:14px 22px; }
+  header h1 { margin:0; font-size:19px; font-weight:650; }
+  header p { margin:3px 0 0; font-size:12px; opacity:.85; }
+  main { display:grid; grid-template-columns: 300px 1fr; gap:16px; padding:16px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:8px; padding:14px; }
+  label { font-size:12px; font-weight:600; color:var(--muted); display:block; margin:10px 0 4px; }
+  select, input { width:100%; padding:7px 9px; font:14px ui-monospace, Menlo, Consolas, monospace;
+                  border:1px solid var(--line); border-radius:5px; background:#fafbfc; }
+  #verdict { margin-top:12px; padding:9px; border-radius:5px; font-weight:650; text-align:center; font-size:14px; }
+  .ok { background:var(--okbg); color:var(--ok); } .bad { background:var(--badbg); color:var(--bad); }
+  .chips span { display:inline-block; margin:3px 3px 0 0; padding:2px 7px; border-radius:10px;
+                font:11.5px ui-monospace, Menlo, monospace; cursor:pointer; }
+  .chips .a { background:var(--okbg); color:var(--ok); } .chips .r { background:var(--badbg); color:var(--bad); }
+  .note { font-size:12px; color:var(--muted); margin-top:14px; line-height:1.45; }
+  #diagram { overflow:auto; max-height:430px; text-align:center; }
+  #diagram svg { max-width:100%; height:auto; }
+  #diagram g.node.cur ellipse { fill:var(--hl); }
+  #diagram g.node.seen ellipse { fill:#e6f0f1; }
+  table { width:100%; border-collapse:collapse; font:12.5px ui-monospace, Menlo, monospace; margin-top:10px; }
+  th, td { text-align:left; padding:3px 8px; border-bottom:1px solid #eef1f4; }
+  th { color:var(--muted); font-weight:600; }
+  td.trap { color:var(--bad); }
+  @media (max-width: 760px) { main { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Finite-automata input validators — live demo</h1>
+  <p>21CSC301T Formal Language and Automata · CLA-2 Task 2 · Shanmugapriyan J (RA2411026050011)</p>
+</header>
+<main>
+  <section class="card">
+    <label for="app">Application</label>
+    <select id="app"></select>
+    <label for="inp">Input string</label>
+    <input id="inp" autocomplete="off" spellcheck="false">
+    <div id="verdict"></div>
+    <label>Examples (click to try)</label>
+    <div class="chips" id="chips"></div>
+    <div class="note" id="note"></div>
+  </section>
+  <section class="card">
+    <div id="diagram"></div>
+    <table><thead><tr><th>#</th><th>state</th><th>char</th><th>symbol</th><th>next</th></tr></thead>
+      <tbody id="trace"></tbody></table>
+  </section>
+</main>
+<script>
+const DATA = /*__DATA__*/null;
+const MOB = {"+":"P","0":"Z","1":"N1","9":"N9","6":"M","7":"M","8":"M","2":"R","3":"R","4":"R","5":"R"};
+const APP = {
+  plate:  { norm: s => s.toUpperCase().replace(/[ -]/g, ""),
+            cls: c => c === "B" ? "B" : c === "H" ? "H" : /[A-Z]/.test(c) ? "A" : /[0-9]/.test(c) ? "D" : "O" },
+  mobile: { norm: s => s.replace(/[ -]/g, ""), cls: c => MOB[c] || "O" },
+  date:   { norm: s => s, cls: c => /[0-9\/]/.test(c) ? c : "O" },
+};
+const $ = id => document.getElementById(id);
+for (const [k, v] of Object.entries(DATA)) $("app").add(new Option(`${v.title} (${v.states} states)`, k));
+
+function load() {
+  const d = DATA[$("app").value];
+  $("diagram").innerHTML = d.svg.replace(/^[\s\S]*?<svg/, "<svg");
+  $("chips").innerHTML = d.accepted.map(s => `<span class="a">${s || "ε"}</span>`).join("") +
+                         d.rejected.map(s => `<span class="r">${s || "ε"}</span>`).join("");
+  $("chips").querySelectorAll("span").forEach(el => el.onclick = () => {
+    $("inp").value = el.textContent === "ε" ? "" : el.textContent; run(); });
+  $("note").textContent = d.note;
+  $("inp").value = d.accepted[0]; run();
+}
+function run() {
+  const key = $("app").value, d = DATA[key], a = APP[key];
+  const text = a.norm($("inp").value);
+  let q = d.start; const seen = new Set([q]); let rows = "";
+  [...text].forEach((ch, i) => {
+    const sym = a.cls(ch);
+    const nq = q === "qT" ? "qT" : (d.delta[`${q}|${sym}`] || "qT");
+    rows += `<tr><td>${i + 1}</td><td>${q}</td><td>${ch === " " ? "␣" : ch}</td><td>${sym}</td>` +
+            `<td class="${nq === "qT" ? "trap" : ""}">${nq === "qT" ? "qT (trap)" : nq}</td></tr>`;
+    q = nq; seen.add(q);
+  });
+  $("trace").innerHTML = rows;
+  const ok = d.accept.includes(q);
+  $("verdict").className = ok ? "ok" : "bad";
+  $("verdict").textContent = ok ? `ACCEPTED · final state ${q}` :
+       (q === "qT" ? "REJECTED · trap state" : `REJECTED · stopped in ${q} (not final)`);
+  document.querySelectorAll("#diagram g.node").forEach(g => {
+    const id = g.id; g.classList.toggle("cur", id === q); g.classList.toggle("seen", id !== q && seen.has(id)); });
+}
+$("app").onchange = load; $("inp").oninput = run; load();
+</script>
+</body>
+</html>

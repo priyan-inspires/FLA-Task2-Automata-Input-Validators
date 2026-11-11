@@ -1,0 +1,38 @@
+digraph "Mobile number" {
+  rankdir=LR;
+  nodesep=0.3; ranksep=0.32;
+  node [shape=circle fontname="DejaVu Sans" fontsize=11 width=0.45];
+  edge [fontname="DejaVu Sans" fontsize=9 arrowsize=0.7];
+  __start [shape=point width=0.07];
+  "k1" [id="k1" shape=circle];
+  "k2" [id="k2" shape=circle];
+  "k3" [id="k3" shape=circle];
+  "k4" [id="k4" shape=circle];
+  "k5" [id="k5" shape=circle];
+  "k6" [id="k6" shape=circle];
+  "k7" [id="k7" shape=circle];
+  "k8" [id="k8" shape=circle];
+  "k9" [id="k9" shape=circle];
+  "k10" [id="k10" shape=doublecircle];
+  "n0" [id="n0" shape=circle];
+  "n1" [id="n1" shape=circle];
+  "n2" [id="n2" shape=circle];
+  "n3" [id="n3" shape=circle];
+  __start -> "n0";
+  "k1" -> "k2" [label="D"];
+  "k2" -> "k3" [label="D"];
+  "k3" -> "k4" [label="D"];
+  "k4" -> "k5" [label="D"];
+  "k5" -> "k6" [label="D"];
+  "k6" -> "k7" [label="D"];
+  "k7" -> "k8" [label="D"];
+  "k8" -> "k9" [label="D"];
+  "k9" -> "k10" [label="D"];
+  "n0" -> "k1" [label="6-9"];
+  "n0" -> "n1" [label="+"];
+  "n0" -> "n2" [label="9"];
+  "n0" -> "n3" [label="0"];
+  "n1" -> "n2" [label="9"];
+  "n2" -> "n3" [label="1"];
+  "n3" -> "k1" [label="6-9"];
+}

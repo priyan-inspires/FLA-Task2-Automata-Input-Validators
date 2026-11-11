@@ -1,0 +1,28 @@
+digraph "BH series" {
+  rankdir=LR;
+  node [shape=circle fontname="DejaVu Sans" fontsize=11 width=0.45 fixedsize=false];
+  edge [fontname="DejaVu Sans" fontsize=9 arrowsize=0.7];
+  __start [shape=point width=0.07];
+  "b0" [id="b0" shape=circle label="b0"];
+  "b1" [id="b1" shape=circle label="b1"];
+  "b2" [id="b2" shape=circle label="b2"];
+  "b3" [id="b3" shape=circle label="b3"];
+  "b4" [id="b4" shape=circle label="b4"];
+  "b5" [id="b5" shape=circle label="b5"];
+  "b6" [id="b6" shape=circle label="b6"];
+  "b7" [id="b7" shape=circle label="b7"];
+  "b8" [id="b8" shape=circle label="b8"];
+  "b9" [id="b9" shape=circle label="b9"];
+  "b10" [id="b10" shape=doublecircle label="b10"];
+  __start -> "b0";
+  "b0" -> "b1" [label="D"];
+  "b1" -> "b2" [label="D"];
+  "b2" -> "b3" [label="B"];
+  "b3" -> "b4" [label="H"];
+  "b4" -> "b5" [label="D"];
+  "b5" -> "b6" [label="D"];
+  "b6" -> "b7" [label="D"];
+  "b7" -> "b8" [label="D"];
+  "b8" -> "b9" [label="L"];
+  "b9" -> "b10" [label="L"];
+}
